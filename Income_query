@@ -1,0 +1,23 @@
+SELECT "GeneralLedger"."entryType" AS "entryType", SUM( "GeneralLedger"."amount" ) AS "Income", 
+	"Customers"."CompanyName" 
+	
+FROM "Invoices", 
+	"InvoiceLineItems", 
+	"Customers", 
+	"GeneralLedger", 
+	"Purchased", 
+	"ExpenseTypes", 
+	"PaymentMedthods", 
+	"Purposes" 
+WHERE "Invoices"."InvoiceID" = "InvoiceLineItems"."InvoiceID" 
+	AND "Invoices"."CustomerID" = "Customers"."CustomerID" 
+	AND "GeneralLedger"."InvoiceID" = "Invoices"."InvoiceID" 
+	AND "GeneralLedger"."ExpenseID" = "Purchased"."ExpenseID" 
+	AND "ExpenseTypes"."ExpenseTypeID" = "Purchased"."ExpenseTypeID" 
+	AND "PaymentMedthods"."PaymentMethodID" = "Purchased"."PaymentMethodID" 
+	AND "Purposes"."PurposeID" = "Purchased"."PurposeID" 
+	AND "GeneralLedger"."InvoiceID" <> NULL 
+	AND "GeneralLedger"."ExpenseID" IS NULL 
+	AND "GeneralLedger"."entryDate" > {d '2017-09-30' } 
+
+GROUP BY "GeneralLedger"."entryType", "Customers"."CompanyName"
